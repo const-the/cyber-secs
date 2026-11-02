@@ -48,7 +48,7 @@ paths:
           description: "klient podał albo zły nonce albo niepoprawny uid LUB klient nie wysłał odpowiedzi wystarczająco szybko"
         
         "418":
-          description: "klient jest czajnikiem"
+          description: "serwer jest czajnikiem"
         
         "500":
           description: "serwer coś dziwnego odwalił"

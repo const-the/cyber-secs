@@ -1,0 +1,101 @@
+:root {
+  --primary-color: #ffc2eb;
+  --secondary-color: #ffd8f4;
+  --accent-color: #ff70bb;
+  --background-color: #fff5fa;
+  --card-bg: #ffffff;
+  --text-color: #5c3b52;
+  --faded-text-color: #bfa3b5;
+  --hover-color: #ff8ad8;
+  --border-color: #ffb3e6;
+
+  
+  font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive, sans-serif;
+  text-align: center;
+  color: var(--text-color);
+}
+
+body {
+  background-color: var(--background-color);
+  background-image: radial-gradient(#ffc2eb 1.5px, transparent 1.5px);
+  background-size: 30px 30px; /* Cute polka dot background pattern */
+  color: var(--text-color);
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.login-card {
+  background-color: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(255, 112, 187, 0.2);
+  padding: 20px;
+  width: 80%;         /* Takes up at least 80% of screen width */
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0 auto;     /* Ensures horizontal centering */
+}
+
+h1.logo {
+  background-color: var(--primary-color);
+  color: #7d2258;
+  padding: 12px 20px;
+  border-radius: 50px;
+  display: inline-block;
+  font-size: 1.4rem;
+  border: 2px dashed var(--accent-color);
+  cursor: pointer;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+textarea {
+    width: 100%;
+    min-height: 25lh;
+    text-wrap-mode: wrap;
+    resize: vertical;
+}
+textarea, input[type="text"]{
+    margin: 10px 0;
+    border-radius: 16px;
+    border: 2px solid var(--border-color);
+    background-color: var(--secondary-color);
+}
+input[type="text"]::placeholder,
+textarea::placeholder {
+  color: var(--faded-text-color);
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  box-shadow: 0 0 10px rgba(255, 112, 187, 0.4);
+  border-color: var(--accent-color);
+  outline: none;
+}
+button {
+  background-color: var(--secondary-color);
+  color: #7d2258;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 2px dashed var(--accent-color);
+  cursor: pointer;
+}
+button:hover{
+  box-shadow: 0 6px 15px var(--hover-color);
+  background-color: var(--primary-color);
+}
+button:active {
+  transform: scale(0.99);
+}
+
+/* autentykacja */
+button img {
+  max-height: 40px;
+  border-radius: 8px;
+}

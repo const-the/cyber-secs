@@ -2,15 +2,25 @@ import Logo from "../components/logo"
 import Autentykacja from "../../assets/autentykacja.gif"
 import { AuthApi } from "../api-generated"
 import { Configuration } from "../api-generated";
-export default function Login() {
-    function authenticate() {
-        const config = new Configuration({
-            basePath: 'http://localhost:2137', // Tutaj podajesz adres serwera
-        });
+import { useNavigate } from 'react-router';
+import { useAuth } from "../util/AuthContext";
 
-        // Tworzymy instancję API przekazując konfigurację
-        const authApi = new AuthApi(config);
-        authApi.authInitPost({ challengeRequest: { uid: "ja", clientChallenge: "jak nazywa się kot, który jest hydraulikiem?" } })
+export default function Login() {
+    const navigate = useNavigate();
+    const { serverAddress, userId, privateKey, authToken, login } = useAuth();
+    function authenticate() {
+        // const config = new Configuration({
+        //     basePath: 'http://localhost:2137',
+        // });
+        // const authApi = new AuthApi(config);
+        // authApi.authInitPost({ challengeRequest: { uid: "ja", clientChallenge: "jak nazywa się kot, który jest hydraulikiem?" } })
+        login({
+            serverAddress: "localhost:2137",
+            userId: "2137",
+            privateKey: "4",
+            authToken: "44"
+        })
+        navigate("/chat")
     }
 
     return <div className="login-card">

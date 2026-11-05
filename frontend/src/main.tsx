@@ -4,15 +4,18 @@ import './index.css'
 import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
+import ChatHomePage from './pages/ChatHomePage.tsx'
+import { AuthProvider, useAuth } from './util/AuthContext.tsx'
 
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 const router = createBrowserRouter([
   {path: "/", Component: Home },
   {path: "/login", Component: Login},
-  {path: "/register", Component: Register}
+  {path: "/register", Component: Register},
+  {path: "/chat", Component: ChatHomePage}
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><RouterProvider router={router} /></StrictMode>
+  <StrictMode><AuthProvider><RouterProvider router={router} /></AuthProvider></StrictMode>
 )

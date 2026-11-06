@@ -5,12 +5,16 @@
 ### 1. The
 
 1. [ ] Dokumentacja API do kryptografii
-    - [ ] wyzwanie dla serwera
-    - [ ] prośba o login
-    - [ ] wysyłanie wiadomości
-    - [ ] wysyłanie nonce
-    - [ ] prośba o timestamp
-    - [ ] wysyłanie timestamp
+    - [ ] Authentifizierung machen:
+        - [ ] wyzwanie dla serwera
+        - [ ] wyzwanie dla klienta
+        - [ ] prośba o login
+    - [ ] wysyłanie wiadomości:  
+        - [ ] wysyłanie ciphertext
+        - [ ] prośba o timestamp
+        - [ ] wysyłanie timestamp
+    - [ ] ustalanie klucza:
+        - [ ] algorytm ustalania?
 
 2. [ ] Sprecyzowanie bibliotek do użycia
 

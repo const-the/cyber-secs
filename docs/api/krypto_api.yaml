@@ -1,16 +1,17 @@
 openapi: 3.0.3
 servers:
-  - url: 127.0.0.1:2137
+  - url: http://127.0.0.1:2137
 
 info:
   title: Wstępne API kryptograficzne
   version: '0.1'
   license:
-    name: '' # uzupełnij jak wybierzemy licencje
-    url: 'https://' # uzupełnij jak wybierzemy licencje
+    name: 'Do What the Fuck You Want to Public License' # uzupełnij jak wybierzemy licencje
+    url: 'https://www.wtfpl.net/about/' # uzupełnij jak wybierzemy licencje
   
 security:
   - bearer_http_authentication: []
+  #- tls_security
 
 paths:
   /auth/init:
@@ -21,8 +22,8 @@ paths:
 
       tags: 
         - auth
-      summary: wysyła wyzwanie serwerowi i prośbe o challange
-      description: zaczyna challange response handshake dając wyzwanie serwerowi, do klienta zwracana jest losowa wartość (serwer ją zapisuje aby ją później potwierdzić) oraz odpowiedź na jego wyzwanie podpisana kluczem prywatnym serwera
+      summary: wysyła wyzwanie serwerowi i prośbe o challenge
+      description: zaczyna challenge response handshake dając wyzwanie serwerowi, do klienta zwracana jest losowa wartość (serwer ją zapisuje aby ją później potwierdzić) oraz odpowiedź na jego wyzwanie podpisana kluczem prywatnym serwera
       
       requestBody:
         required: true
@@ -32,18 +33,18 @@ paths:
               $ref: '#/components/schemas/challenge_request'
       
       responses:
-        200:
-          description: serwer wysyła odpowiedź na wyzwanie wraz ze swoim wyzwaniem
-          content: 
-            application/json:
-              schema:
-                $ref: "#/components/schemas/challange"
-
-        408:
-          description: serwer czekał za długo na wiadomość
-        
-        500:
-          description: coś poszło nie tak
+        '200':
+          $ref: "#/components/responses/send_challange_200"
+        '400':
+          $ref: "#/components/responses/generic_client_error_400"
+        '408':
+          $ref: "#/components/responses/request_timeout_408"
+        '429':
+          $ref: "#/components/responses/too_many_requests_429"
+        '500':
+          $ref: "#/components/responses/internal_server_error_500"
+        default:
+          $ref: "#/components/responses/generic_error"
   
   /auth/login:
     post:
@@ -54,7 +55,7 @@ paths:
       tags: 
         - auth
       summary: loguje sie używając odpowiedzi na wyzwanie
-      description: klient wysyła do serwera zaszyfrowaną swoim prywatnym kluczem wartość którą dostał od serwera i dostaje spowrotem session token. Trzeba zaimplementować timeout
+      description: klient wysyła do serwera podpisaną swoim prywatnym kluczem wartość którą dostał od serwera i dostaje spowrotem session token. Trzeba zaimplementować timeout
       
       requestBody:
         required: true
@@ -64,21 +65,22 @@ paths:
               $ref: '#/components/schemas/login_request'
       
       responses:
-        200:
-          description: serwer wysyła klientowi session token
-          content: 
-            application/json:
-              schema:
-                $ref: "#/components/schemas/login"
-        
-        403:
-          description: klient podał albo zły nonce albo niepoprawny uid LUB klient nie wysłał odpowiedzi wystarczająco szybko
-        
-        418:
-          description: serwer jest czajnikiem
-        
-        500:
-          description: serwer coś dziwnego odwalił
+        '200':
+          $ref: "#/components/responses/send_session_token_200"
+        '400':
+          $ref: "#/components/responses/generic_client_error_400"
+        '403':
+          $ref: "#/components/responses/wrong_login_info_403"  
+        '408':
+          $ref: "#/components/responses/request_timeout_408"
+        '418':
+          $ref: "#/components/responses/im_a_teapot_418"
+        '429':
+          $ref: "#/components/responses/too_many_requests_429"
+        '500':
+          $ref: "#/components/responses/internal_server_error_500"
+        default:
+          $ref: "#/components/responses/generic_error"
 
 components:
   securitySchemes: 
@@ -115,6 +117,16 @@ components:
       format: byte
       description: authentication token used by the client
     
+    html:
+      type: string
+      format: html
+      description: tekst html do wysłania jako odpowiedź na żądanie
+    
+    reason:
+      type: string
+      format: reason_for_response
+      description: VERY VAGUE DESCRIPTION OF WHAT CAUSED THE ERROR CODE. DO NOT BE SPECIFIC!!!!!!!!!
+    
     # ========= ważne obiekty =========
     
     challenge_request:
@@ -133,16 +145,16 @@ components:
         - uid
         - client_challenge
 
-    challange:
+    challenge:  
       type: object
 
       properties: 
-        server_challange_response:
+        server_challenge_response:
           description: podpisany przez serwer nonce który dostał od klienta
           allOf:
             - $ref: "#/components/schemas/signature"
         
-        server_challange:
+        server_challenge:
           description: nonce wygenerowany jako wyzwanie do klienta
           allOf:
             - $ref: "#/components/schemas/nonce"
@@ -150,8 +162,8 @@ components:
     # ^^^ rozpoczęcie logowania ^^^
           
       required:
-        - server_challange_response
-        - server_challange
+        - server_challenge_response
+        - server_challenge
     
     login_request:
       type: object
@@ -161,7 +173,7 @@ components:
           $ref: '#/components/schemas/user_id'
         
         client_login:
-          description: podpisane prywatnym kluczem klienta wyzwanie wysłane przez serwer
+          description: podpisane prywatnym kluczem klienta wyzwa  nie wysłane przez serwer
           allOf:
             - $ref: '#/components/schemas/signature'
       
@@ -180,3 +192,93 @@ components:
         - token
     
     # ^^^ logowanie ^^^
+    
+    html_response:
+      type: object
+
+      properties: 
+        html:
+          $ref: "#/components/schemas/html"
+        
+        response_reason:
+          $ref: "#/components/schemas/reason"
+      
+      required:
+        - html
+    
+  responses: 
+    # ========= odpowiedzi serwera =========
+    'generic_OK_200':
+      description: klient wysłał poprawne żądanie
+      content: 
+        application/json:
+          schema: 
+            $ref: "#/components/schemas/html_response"
+    
+    'send_challange_200':
+      description: serwer wysyła odpowiedź na wyzwanie wraz ze swoim wyzwaniem
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/challenge"
+    
+    'send_session_token_200':
+      description: serwer wysyła klientowi session token
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/login"
+
+    # ^^^ 2XX ^^^
+
+    'generic_client_error_400':
+      description: klient wysłał źle sformatowane żądanie
+      content: 
+        application/json:
+          schema: 
+            $ref: "#/components/schemas/html_response"
+      
+    'wrong_login_info_403':
+      description: klient podał albo zły nonce albo niepoprawny uid LUB klient nie wysłał odpowiedzi wystarczająco szybko
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/html_response"
+    
+    'request_timeout_408':
+      description: serwer czekał za długo na wiadomość
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/html_response"
+              
+    'im_a_teapot_418':
+      description: serwer jest czajnikiem
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/html_response"
+    
+    'too_many_requests_429':
+      description: wysłano za dużo zapytań, najlepiej ograniczyć dostęp do serwera przez klienta
+      content: 
+        application/json:
+          schema:
+            $ref: "#/components/schemas/html_response"
+    # ^^^ 4XX ^^^
+    
+    'internal_server_error_500':
+      description: serwer zachował się niespodziewanie
+      content: 
+        application/json:
+          schema: 
+            $ref: "#/components/schemas/html_response"
+    
+    # ^^^ 5XX ^^^
+  
+    'generic_error':
+      description: wystąpił jakiś błąd ale nie jest zbyt ważne żeby sprecyzować jaki albo nie jest to możliwe
+      content: 
+        application/json:
+          schema: 
+            $ref: "#/components/schemas/html_response"

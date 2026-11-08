@@ -14,8 +14,8 @@ interface AuthState {
 
 // Inherits everything from AuthState and adds login/logout functions
 interface AuthContextType extends AuthState {
-  login: (data: AuthState) => void;
-  logout: () => void;
+  saveLoginInfo: (data: AuthState) => void;
+  deleteLoginInfo: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authToken: localStorage.getItem('authToken') || '',
   }));
 
-  const login = (data: AuthState) => {
+  const saveLoginInfo = (data: AuthState) => {
     setAuth(data);
     localStorage.setItem('serverAddress', data.serverAddress);
     localStorage.setItem('userId', data.userId);
@@ -38,13 +38,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('authToken', data.authToken);
   };
 
-  const logout = () => {
+  const deleteLoginInfo = () => {
     setAuth({ serverAddress: '', userId: '', privateKey: '', authToken: '' });
     localStorage.clear();
   };
 
   return (
-    <AuthContext value={{ ...auth, login, logout }}>
+    <AuthContext value={{ ...auth, saveLoginInfo, deleteLoginInfo }}>
       {children}
     </AuthContext>
   );

@@ -1,0 +1,15 @@
+openapi: 3.0.3 # jak przetestujemy czy endpointy działają zmieniamy na 3.1.0
+
+servers:
+  - url: "htpp://127.0.0.1:2137"
+
+info:
+  title: Cyber-SECS API
+  version: '0.1'
+  description: jeden plik zawierający kombinacje wszystkich napisanych przez nas endpointów, odwołujący się przez $ref do ich implementacji
+  license:
+    name: GNU AGPLv3
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+
+paths:
+  

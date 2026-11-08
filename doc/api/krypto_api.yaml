@@ -36,7 +36,7 @@ paths:
         '200':
           $ref: "#/components/responses/send_challange_200"
         '400':
-          $ref: "#/components/responses/generic_client_error_400"
+          $ref: "#/components/responses/bad_request_400"
         '408':
           $ref: "#/components/responses/request_timeout_408"
         '429':
@@ -68,7 +68,7 @@ paths:
         '200':
           $ref: "#/components/responses/send_session_token_200"
         '400':
-          $ref: "#/components/responses/generic_client_error_400"
+          $ref: "#/components/responses/bad_request_400"
         '403':
           $ref: "#/components/responses/wrong_login_info_403"  
         '408':
@@ -208,7 +208,7 @@ components:
     
   responses: 
     # ========= odpowiedzi serwera =========
-    'generic_OK_200':
+    'OK_200':
       description: klient wysłał poprawne żądanie
       content: 
         application/json:
@@ -231,7 +231,7 @@ components:
 
     # ^^^ 2XX ^^^
 
-    'generic_client_error_400':
+    'bad_request_400':
       description: klient wysłał źle sformatowane żądanie
       content: 
         application/json:

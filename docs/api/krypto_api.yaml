@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.3
 servers:
   - url: 127.0.0.1:2137
 
@@ -88,8 +88,8 @@ components:
       type: http
       scheme: bearer
       
-    tls_security:
-      type: mutualTLS
+    #tls_security:
+    #  type: mutualTLS #wyłączone na razie, potem upgradeujemy na openAPI 3.1.0
 
   schemas:
     # ========= ważne zmienne =========

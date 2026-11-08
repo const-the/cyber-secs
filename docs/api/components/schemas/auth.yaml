@@ -1,0 +1,79 @@
+schemas:
+  # ========= ważne obiekty =========
+
+  challenge_request:
+    type: object
+    
+    properties:
+      uid:
+        $ref: './core.yaml#/schemas/user_id'
+      
+      client_challenge:
+        description: nonce wygenerowany przez klienta
+        allOf: 
+          - $ref: './core.yaml#/schemas/nonce'
+    
+    required:
+      - uid
+      - client_challenge
+
+  challenge:  
+    type: object
+
+    properties: 
+      server_challenge_response:
+        description: podpisany przez serwer nonce który dostał od klienta
+        allOf:
+          - $ref: "./core.yaml#/schemas/signature"
+      
+      server_challenge:
+        description: nonce wygenerowany jako wyzwanie do klienta
+        allOf:
+          - $ref: "./core.yaml#/schemas/nonce"
+
+  # ^^^ rozpoczęcie logowania ^^^
+        
+    required:
+      - server_challenge_response
+      - server_challenge
+
+  login_request:
+    type: object
+    
+    properties:
+      uid:
+        $ref: './core.yaml#/schemas/user_id'
+      
+      client_login:
+        description: podpisane prywatnym kluczem klienta wyzwa  nie wysłane przez serwer
+        allOf:
+          - $ref: './core.yaml#/schemas/signature'
+    
+    required:
+      - uid
+      - client_login
+
+  login:
+    type: object
+
+    properties: 
+      token:
+        $ref: "./core.yaml#/schemas/auth_token"
+        
+    required:
+      - token
+
+  # ^^^ logowanie ^^^
+
+  html_response:
+    type: object
+
+    properties: 
+      html:
+        $ref: "./core.yaml#/schemas/html"
+      
+      response_reason:
+        $ref: "./core.yaml#/schemas/reason"
+    
+    required:
+      - html

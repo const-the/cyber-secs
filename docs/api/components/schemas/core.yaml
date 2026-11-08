@@ -1,0 +1,46 @@
+schemas: 
+    # ========= ważne zmienne =========
+
+  user_id:
+    type: string
+    format: byte
+    description: hash username'a którego używa dany klient, przekształcony na base64. serwer nie zna nazwy użytkownika dla prywatności
+
+  nonce:
+    type: string
+    format: byte
+    minLength: 44 #tutaj js używa character jako minLnegth czyli długość nonce to 32 bajty losowych danych i to przekształcone na base64 daje 44 znaków
+    description: kompletnie losowo wygenerowany ciąg bitów przekształcony w format base64. BARDZO WAŻNE ABY BYŁ ON UNIKATOWY. Powinniśmy używać do jego generacji NIEDETERMINISTYCZNY algorytm 
+
+  signature:
+    type: string
+    format: byte
+    description: podpisanty skrót wiadomości
+    
+  auth_token:
+    type: string
+    format: byte
+    description: authentication token used by the client
+
+  html:
+    type: string
+    format: html
+    description: tekst html do wysłania jako odpowiedź na żądanie
+
+  reason:
+    type: string
+    format: reason_for_response
+    description: VERY VAGUE DESCRIPTION OF WHAT CAUSED THE ERROR CODE. DO NOT BE SPECIFIC!!!!!!!!!
+
+  html_response:
+    type: object
+
+    properties: 
+      html:
+        $ref: "#/schemas/html"
+      
+      response_reason:
+        $ref: "#/schemas/reason"
+    
+    required:
+      - html

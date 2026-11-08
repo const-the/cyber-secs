@@ -1,0 +1,68 @@
+paths:
+  /auth/init:
+    post:
+      security: []
+
+      operationId: initiate_login
+
+      tags: 
+        - auth
+      summary: wysyła wyzwanie serwerowi i prośbe o challenge
+      description: zaczyna challenge response handshake dając wyzwanie serwerowi, do klienta zwracana jest losowa wartość (serwer ją zapisuje aby ją później potwierdzić) oraz odpowiedź na jego wyzwanie podpisana kluczem prywatnym serwera
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/auth.yaml#/schemas/challenge_request'
+      
+      responses:
+        '200':
+          $ref: "../components/responses.yaml#/responses/send_challange_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+  
+  /auth/login:
+    post:
+      security: []
+      
+      operationId: login
+
+      tags: 
+        - auth
+      summary: loguje sie używając odpowiedzi na wyzwanie
+      description: klient wysyła do serwera podpisaną swoim prywatnym kluczem wartość którą dostał od serwera i dostaje spowrotem session token. Trzeba zaimplementować timeout
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/auth.yaml#/schemas/login_request'
+      
+      responses:
+        '200':
+          $ref: "../components/responses.yaml#/responses/send_session_token_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/wrong_login_info_403"  
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '418':
+          $ref: "../components/responses.yaml#/responses/im_a_teapot_418"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"

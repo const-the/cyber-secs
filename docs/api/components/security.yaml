@@ -1,0 +1,9 @@
+securitySchemes: 
+  # ========= ważne schematy bezpieczeństwa =========
+
+  bearer_http_authentication:
+    type: http
+    scheme: bearer
+    
+  #tls_security:
+  #  type: mutualTLS #wyłączone na razie

@@ -33,8 +33,8 @@
 #### Pisanie dokumentacji
 
 - przeczytać [dokumentacje openAPI](https://swagger.io/docs/specification/v3_0/about/) a przynajmniej czytać ją na bieżąco z pisaniem
-- używać wersji openapi: 3.0.3
-- pisać dokumentacje w .yaml
+- przeczytać w jaki sposób zmodularyzować dokumentacje w /docs/architecture/README.md
+- pisać dokumentacje w .yaml 
 
 #### Pisanie kodu na bazie dokumentacji
 

@@ -1,0 +1,72 @@
+schemas:
+  server_message:
+    type: string
+    format: byte
+
+    properties:
+      encrypted_message:
+        description: >
+          zaszyfrowany algorytmem szyfrowania typu AEAD obiekt message
+          do zaimplementowania:
+            - wchodzi obiekt message
+            - obiekt message jest szyfrowany używając AEAD
+            - cały szyfrogram jest konwertowany na base64
+          w taki sposób uzyskane base64 jest uznawane za encrypted_message
+        # ref do obiektu message
+    
+    required:
+      - encrypted_message
+    
+  tsa_request:
+    type: object
+    description: obiekt TimeStampReq jak zdefiniowany przez RFC 3161 (bit https://www.rfc-editor.org/info/rfc3161/#section-2.4.1)
+
+    properties:
+      version:
+        type: integer
+        format: 1 # na razie nie ma sprecyzowanej przez RFC innej wersji jak v1
+        description: wersja time stamp request 
+      
+      message_imprint:
+        $ref: "#/schemas/message_imprint"
+    
+      #req_policy:
+      #  type:
+      #  format:
+      #  description:
+
+      nonce:
+        $ref: "./core.yaml#/schemas/nonce"
+      
+      cert_req:
+        type: bool
+        description: podstawowo jest fałsz, jeśli jest prawdą TSA musi w odpowiedzi musi doczepić swój klucz publiczny znajdujący się w certyfikacie
+
+      #extensions:
+      #  type:
+      #  format:
+      #  description:
+          
+    required:
+      - version
+      - message_imprint
+   
+  tsa_response:
+    type: object
+    description: >
+      odpowiedź tsa jak zdefiniowana w RFC 3161 (bit https://www.rfc-editor.org/info/rfc3161/#section-2.4.2)
+      RFC 3136 został updateowany w niektórych aspektach, prosze przeczytać RFC 5816 (https://www.rfc-editor.org/info/rfc5816/#section-2)
+
+
+
+    properties:
+      status:
+        $ref: "#/schemas/PKI_status_info"
+
+      time_stamp_token:
+      
+    required:
+      - status
+    
+
+

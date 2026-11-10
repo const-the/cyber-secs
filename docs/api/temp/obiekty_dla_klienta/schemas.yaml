@@ -1,0 +1,177 @@
+  tsa_request:
+    type: object
+    description: obiekt TimeStampReq jak zdefiniowany przez RFC 3161 (bit https://www.rfc-editor.org/info/rfc3161/#section-2.4.1)
+
+    properties:
+      version:
+        type: integer
+        format: 1 # na razie nie ma sprecyzowanej przez RFC innej wersji jak v1
+        description: wersja time stamp request 
+      
+      message_imprint:
+        $ref: "#/schemas/message_imprint"
+    
+      #req_policy:
+      #  type:
+      #  format:
+      #  description:
+
+      nonce:
+        $ref: "./core.yaml#/schemas/nonce"
+      
+      cert_req:
+        type: bool
+        description: podstawowo jest fałsz, jeśli jest prawdą TSA musi w odpowiedzi musi doczepić swój klucz publiczny znajdujący się w certyfikacie
+
+      #extensions:
+      #  type:
+      #  format:
+      #  description:
+          
+    required:
+      - version
+      - message_imprint
+   
+  tsa_response:
+    type: object
+    description: >
+      odpowiedź tsa jak zdefiniowana w RFC 3161 (bit https://www.rfc-editor.org/info/rfc3161/#section-2.4.2)
+      RFC 3136 został updateowany w niektórych aspektach, prosze przeczytać RFC 5816 (https://www.rfc-editor.org/info/rfc5816/#section-2)
+
+
+
+    properties:
+      status:
+        $ref: "#/schemas/PKI_status_info"
+
+      time_stamp_token:
+      
+    required:
+      - status
+    
+  hash_OID:
+    type: string
+    format: OID
+    pattern: '^[0-2](\.[0-9]+)+$'
+    description: OID definiujące jaki hash algorithm został użyty do wysłanego hashu (https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpnap/a48b02b2-2a10-4eb0-bed4-1807a6d2f5ad)
+  
+  hash:
+    type: string
+    format: byte
+    description: skrót uzyskany z wyjścia funkcji skrótu z jakimś wybranym wejściem
+  
+  # vvvvvvvvvvvvvv obiekty do tsa_request vvvvvvvvvvvvvv
+  
+  message_imprint:
+    type: object
+
+    properties:
+      hash_algorithm:
+        $ref: "./core.yaml#/schemas/hash_OID"
+      
+      hashed_message:
+        $ref: "./core.yaml#/schemas/hash"
+
+    required:
+      - hash_algorithm
+      - hashed_message
+
+# ^^^^^^^^^^^^^^ obiekty do tsa_request ^^^^^^^^^^^^^^
+
+# vvvvvvvvvvvvvv obiekty do tsa_response - status vvvvvvvvvvvvvv
+
+  PKI_status_info:
+    type: object
+
+    properties:
+      status:
+        $ref: "#/schemas/PKI_status"
+      
+      status_string:
+        $ref: "#/schemas/PKI_free_text"
+      
+      fail_info:
+        $ref: "#/schemas/PKI_failure_info"
+      
+    required:
+      - status
+  
+  PKI_status:
+    type: integer
+    minimum: 0
+    maximum: 5
+    definition: >
+      0 - przyznany (bit time stamp token - jak poproszono - jest obecny)
+      1 - przyznany z modyfikacjami (bit time stamp token jest obecny z modyfikacjami)
+      2 - odrzucenie
+      3 - czekanie
+      4 - ostrzerzenie o unieważnieniu (bit ostrzeżenie o nadciągającym unieważnieniu)
+      5 - unieważnienie (bit powiadomienie o tym że nastąpiło unieważnienie)
+  
+  PKI_free_text:
+    type: array
+    description: >
+      wolny tekst czytelny przez człowieka
+    items:
+      type: string
+  
+  PKI_failure_info:
+    type: array
+    format: bit stream
+    definition: >
+      informacje o błędach które wystąpiły jak zdefiniowane w RFC 3161 (bit https://www.rfc-editor.org/info/rfc3161/#section-2.4.2)
+      jest zdefiniowane jako bit stream czyli jakaś ilość bitów (niekoniecznie tworząca bajty)
+      implementujmy jako tablica bitów:
+
+      - BAD_ALG                 #(bit 0)  -- UNRECOGNIZED OR UNSUPPORTED ALGORITHM IDENTIFIER
+      - BAD_REQUEST             #(bit 2)  -- TRANSACTION NOT PERMITTED OR SUPPORTED
+      - BAD_DATA_FORMAT         #(bit 5)  -- THE DATA SUBMITTED HAS THE WRONG FORMAT
+      - TIME_NOT_AVAILABLE      #(bit 14) -- THE TSA'S TIME SOURCE IS NOT AVAILABLE
+      - UNACCEPTED_POLICY       #(bit 15) -- THE REQUESTED TSA POLICY IS NOT SUPPORTED BY THE TSA
+      - UNACCEPTED_EXTENSION    #(bit 16) -- THE REQUESTED EXTENSION IS NOT SUPPORTED BY THE TSA
+      - ADD_INFO_NOT_AVAILABLE  #(bit 17) -- THE ADDITIONAL INFORMATION REQUESTED COULD NOT BE UNDERSTOOD OR IS NOT AVAILABLE
+      - SYSTEM_FAILURE          #(bit 25) -- THE REQUEST CANNOT BE HANDLED DUE TO SYSTEM FAILURE
+
+    items:
+      type: string
+      enum:
+        - BAD_ALG                 #(bit 0)  -- UNRECOGNIZED OR UNSUPPORTED ALGORITHM IDENTIFIER
+        - BAD_REQUEST             #(bit 2)  -- TRANSACTION NOT PERMITTED OR SUPPORTED
+        - BAD_DATA_FORMAT         #(bit 5)  -- THE DATA SUBMITTED HAS THE WRONG FORMAT
+        - TIME_NOT_AVAILABLE      #(bit 14) -- THE TSA'S TIME SOURCE IS NOT AVAILABLE
+        - UNACCEPTED_POLICY       #(bit 15) -- THE REQUESTED TSA POLICY IS NOT SUPPORTED BY THE TSA
+        - UNACCEPTED_EXTENSION    #(bit 16) -- THE REQUESTED EXTENSION IS NOT SUPPORTED BY THE TSA
+        - ADD_INFO_NOT_AVAILABLE  #(bit 17) -- THE ADDITIONAL INFORMATION REQUESTED COULD NOT BE UNDERSTOOD OR IS NOT AVAILABLE
+        - SYSTEM_FAILURE          #(bit 25) -- THE REQUEST CANNOT BE HANDLED DUE TO SYSTEM FAILURE
+
+# ^^^^^^^^^^^^^^ obiekty do tsa_response - status ^^^^^^^^^^^^^^
+
+  /msg/timestamp:
+    post:
+      operationId: get_timestamp  
+
+      tags: 
+        - msg
+      summary: prośba o TSA token
+      description: wysyła serwerowi szyfrogram którego skrót TSA ma podpisać, i serwer zwraca podpisany TSA token
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: # tsa token request
+              #$ref: '../components/schemas/auth.yaml#/schemas/challenge_request'
+      
+      responses: # pomyśl jeszcze jakie inne mogą nastąpić sytuacje i uzupełnij
+        '200': #send token 200
+          #$ref: "../components/responses.yaml#/responses/send_challange_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"

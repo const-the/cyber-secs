@@ -1,34 +1,4 @@
 paths:
-  /msg/timestamp:
-    post:
-      operationId: get_timestamp  
-
-      tags: 
-        - msg
-      summary: prośba o TSA token
-      description: wysyła serwerowi szyfrogram którego skrót TSA ma podpisać, i serwer zwraca podpisany TSA token
-      
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: # tsa token request
-              #$ref: '../components/schemas/auth.yaml#/schemas/challenge_request'
-      
-      responses: # pomyśl jeszcze jakie inne mogą nastąpić sytuacje i uzupełnij
-        '200': #send token 200
-          #$ref: "../components/responses.yaml#/responses/send_challange_200"
-        '400':
-          $ref: "../components/responses.yaml#/responses/bad_request_400"
-        '408':
-          $ref: "../components/responses.yaml#/responses/request_timeout_408"
-        '429':
-          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
-        '500':
-          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
-        default:
-          $ref: "../components/responses.yaml#/responses/generic_error"
-
   /msg/send:
     post:
       operationId: send_message

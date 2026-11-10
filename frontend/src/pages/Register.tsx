@@ -13,17 +13,17 @@ export default function Register() {
 
     const {} = useAuth();
     function generateKeys(){
-        // TODO tutaj ma się jakoś odbywać wezwanie do biblioteki generującej klucze
+        // TODO tutaj ma się jakoś odbywać wezwanie do biblioteki generującej klucze 📚
         setPrivateKey("4")
         setPublicKey("fueiwchfueiwhcrfqueiwbdhfqueiwi")
 
     }
     function registerUser(){
         // TODO tutaj ma się odbywać faktyczna komunikacja z serwerem jakaś
-        // powinna też być obsługa błędów i jakiś element UI do wyświetlania błędów
+        // powinna też być obsługa błędów i jakiś element UI do wyświetlania błędów⚠️
         saveLoginInfo({
             serverAddress: serverAddress,
-            userId: "1234", // TODO zrobić by to było równe hash(userName)
+            userId: "1234", // TODO zrobić by to było równe hash(userName)🏷️
             privateKey: "4",
             authToken: "token"
         })

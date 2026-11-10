@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import Logo from "../components/logo";
 import Autentykacja from "../../assets/autentykacja.gif";
 import { useAuth } from "../util/AuthContext";
-
 export default function Login() {
     const navigate = useNavigate();
     const { saveLoginInfo } = useAuth();
@@ -12,11 +11,11 @@ export default function Login() {
     const [privateKey, setPrivateKey] = useState("");
 
     function authenticate() {
-        // TODO tutaj powinna być komunikacja z API
+        // TODO tutaj powinna być komunikacja z API💬💬
 
         saveLoginInfo({
             serverAddress,
-            userId: "1234",// TODO zrobić by to było równe hash(userName)
+            userId: "1234",// TODO zrobić by to było równe hash(userName)🏷️
             privateKey,
             authToken: "44"
         });

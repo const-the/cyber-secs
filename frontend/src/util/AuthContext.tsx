@@ -1,4 +1,4 @@
-// ten kod został wygenerowany przez gemini, ale został przeanalizowany i zrozumiany przez człowieka
+// ten kod został wygenerowany przez gemini 🤖, ale został przeanalizowany i zrozumiany przez człowieka
 // tutaj fajne źródło informacji o co chodzi z tymi kontekstami:
 // https://react.dev/learn/passing-data-deeply-with-context
 
@@ -12,7 +12,7 @@ interface AuthState {
   authToken: string;
 }
 
-// Inherits everything from AuthState and adds login/logout functions
+// Inherits everything from AuthState 🧬 and adds login/logout functions 🧑‍💻
 interface AuthContextType extends AuthState {
   saveLoginInfo: (data: AuthState) => void;
   deleteLoginInfo: () => void;
@@ -21,7 +21,7 @@ interface AuthContextType extends AuthState {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // AuthProvider to taki komponent w który można zawinąć inne komponenty i wtedy one będą miały dostęp do danych danych przez ten kontekst
-// oraz do funkcji login i logout
+// oraz do funkcji login i logout 🌯
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>(() => ({
     serverAddress: localStorage.getItem('serverAddress') || '',

@@ -1,5 +1,6 @@
 /api/*
 !/api/README.md
+api-generated
 # Logs
 logs
 *.log

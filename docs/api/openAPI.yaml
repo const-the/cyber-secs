@@ -24,4 +24,5 @@ paths:
 
 components:
   securitySchemes:
-    $ref: './components/security.yaml#/securitySchemes'
+    bearer_http_authentication:
+      $ref: './components/security.yaml#/securitySchemes/bearer_http_authentication'

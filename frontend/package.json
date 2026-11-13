@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "generate:api": "openapi-generator-cli generate -i ../docs/api/krypto_api.yaml -g typescript-fetch -o ./src/api-generated --additional-properties=supportsES6=true,typescriptThreePlus=true"
+    "generate:api": "openapi-generator-cli generate -i ../docs/api/openAPI.yaml -g typescript-fetch -o ./src/api-generated --additional-properties=supportsES6=true,typescriptThreePlus=true"
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.13.12",

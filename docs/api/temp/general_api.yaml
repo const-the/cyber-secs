@@ -2,12 +2,23 @@ openapi: 3.0.3
 
 info:
   title: "Wstępne API wszystkiego innego niż kryptografia"
+  license:
+    name: "Do What the Fuck You Want to Public License"
+    url: "https://www.wtfpl.net/about/"
   version: "0.1"
+
+servers:
+  # trzeba dodać
+  - url: "/"
 
 paths:
   /user/{user_id}:
     get:
+      operationId: get_user
+      summary: "pobierz informacje o użytkowniku"
       description: "pobierz publicznie dostępne informacje o użytkowniku"
+      security:
+        - CookieAuth: []
 
       parameters:
         - name: user_id
@@ -27,12 +38,25 @@ paths:
                   public_key:
                     $ref: '#/components/schemas/public_key'
 
+        "400":
+          description: "podano niepoprawne parametry"
+
+        "401":
+          description: "niewłaściwy token"
+
+        "403":
+          description: "użytkownik nie ma uprawnień do informacji o tym użytkowniku"
+
         "404":
           description: "nie znaleziono użytkownika"
 
   /user/{user_id}/gcs:
     get:
-      description: "pobierz listę groupchatów użytkownika"
+      operationId: get_user_groupchats
+      summary: "pobierz listę groupchatów użytkownika"
+      description: "pobierz listę groupchatów użytkownika (to samo co w summary bo nie ma o czym się rozwodzić)"
+      security:
+        - CookieAuth: []
 
       parameters:
         - name: user_id
@@ -53,16 +77,26 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/groupchat'
-        
+
+        "400":
+          description: "podano niepoprawne parametry"
+
         "401":
+          description: "niewłaściwy token"
+
+        "403":
           description: "użytkownik nie ma uprawnień do informacji o groupchatach tego użytkownika"
 
         "404":
           description: "nie znaleziono użytkownika"
 
-  /gc:
+  /gc/new:
     post:
-      description: "stwórz nowy groupchat"
+      operationId: make_groupchat
+      summary: "stwórz nowy groupchat"
+      description: "stwórz nowy groupchat z określonymi użytkownikami"
+      security:
+        - CookieAuth: []
 
       requestBody:
         required: true
@@ -87,9 +121,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/groupchat'
 
+        "400":
+          description: "podano niepoprawne parametry"
+
+        "401":
+          description: "niewłaściwy token"
+
+        "403":
+          description: "użytkownik nie ma uprawnień do tworzenia groupchatów"
+
+        "404":
+          description: "nie znaleziono jednego lub więcej podanych użytkowników"
+
   /gc/{groupchat_id}:
     get:
-      description: "pobierz informacje o groupchacie"
+      operationId: get_groupchat
+      summary: "pobierz informacje o groupchacie"
+      description: "pobierz informacje o groupchacie (to samo co w summary bo nie ma o czym się rozwodzić)"
+      security:
+        - CookieAuth: []
 
       parameters:
         - name: groupchat_id
@@ -113,7 +163,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/message_key'
 
+        "400":
+          description: "podano niepoprawne parametry"
+
         "401":
+          description: "niewłaściwy token"
+
+        "403":
           description: "użytkownik nie ma uprawnień do informacji o tym groupchacie"
 
         "404":
@@ -121,7 +177,11 @@ paths:
 
   /gc/{groupchat_id}/message:
     get:
+      operationId: get_groupchat_messages
+      summary: "pobierz wiadomości"
       description: "pobierz wiadomości z groupchatu od ostatnio widzianego id"
+      security:
+        - CookieAuth: []
 
       parameters:
         - name: groupchat_id
@@ -148,16 +208,25 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/encrypted_message'
-        
+
+        "400":
+          description: "podano niepoprawne parametry"
+
         "401":
+          description: "niewłaściwy token"
+
+        "403":
           description: "użytkownik nie ma uprawnień do oglądania wiadomości na tym groupchacie"
-        
+
         "404":
           description: "nie znaleziono groupchatu"
 
-  /gc/{groupchat_id}/message:
     post:
+      operationId: send_groupchat_message
+      summary: "wyślij wiadomość"
       description: "wyślij wiadomość do groupchatu. Użytkownik i timestamp dodawany przez serwer?"
+      security:
+        - CookieAuth: []
 
       parameters:
         - name: groupchat_id
@@ -181,14 +250,26 @@ paths:
       responses:
         "200":
           description: "wiadomość została przyjęta i zapisana"
-        
+
+        "400":
+          description: "podano niepoprawne parametry"
+
         "401":
+          description: "niewłaściwy token"
+
+        "403":
           description: "użytkownik nie ma uprawnień do wysyłania wiadomości na tym groupchacie"
-        
+
         "404":
           description: "nie znaleziono groupchatu"
 
 components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth
+
   schemas:
     # -------- zmienne --------
 
@@ -211,7 +292,7 @@ components:
       type: string
       format: byte
       description: "identyfikator wiadomości"
-    
+
     public_key:
       type: string
       format: byte
@@ -229,7 +310,8 @@ components:
 
     message_type:
       type: string
-      enum: # można pododawać tutaj inne rzeczy ale na razie tylko text używamy
+      enum:
+        # można pododawać tutaj inne rzeczy ale na razie tylko text używamy
         - text
         - image
         - group_change

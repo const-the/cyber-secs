@@ -1,5 +1,5 @@
-schemas: 
-    # ========= ważne zmienne =========
+schemas:
+  # ========= ważne zmienne =========
 
   user_id:
     type: string
@@ -10,13 +10,13 @@ schemas:
     type: string
     format: byte
     minLength: 44 #tutaj js używa character jako minLnegth czyli długość nonce to 32 bajty losowych danych i to przekształcone na base64 daje 44 znaków
-    description: kompletnie losowo wygenerowany ciąg bitów przekształcony w format base64. BARDZO WAŻNE ABY BYŁ ON UNIKATOWY. Powinniśmy używać do jego generacji NIEDETERMINISTYCZNY algorytm 
+    description: kompletnie losowo wygenerowany ciąg bitów przekształcony w format base64. BARDZO WAŻNE ABY BYŁ ON UNIKATOWY. Powinniśmy używać do jego generacji NIEDETERMINISTYCZNY algorytm
 
   signature:
     type: string
     format: byte
     description: podpisanty skrót wiadomości
-    
+
   auth_token:
     type: string
     format: byte
@@ -32,15 +32,62 @@ schemas:
     format: reason_for_response
     description: VERY VAGUE DESCRIPTION OF WHAT CAUSED THE ERROR CODE. DO NOT BE SPECIFIC!!!!!!!!!
 
+  groupchat_id:
+    type: string
+    format: byte
+    description: w sumie to nie wiem jak to będzie wyglądać ale chyba jakieś losowy string?
+
+  message_key_id:
+    type: string
+    format: byte
+    description: identyfikator klucza wiadomości
+
+  message_id:
+    type: string
+    format: byte
+    description: identyfikator wiadomości
+
+  public_key:
+    type: string
+    format: byte
+    description: klucz publiczny użytkownika
+
+  assymetric_cypher_text:
+    type: string
+    format: byte
+    description: dane zaszyfrowane asymetrycznie do odszyfrowania kluczem prywatnym użytkownika
+
+  aes_cypher_text:
+    type: string
+    format: byte
+    description: dane zaszyfrowane symetrycznie do odszyfrowania kluczem groupchatu
+
+  message_type:
+    type: string
+    format: enum
+    enum:
+      # można pododawać tutaj inne rzeczy ale na razie tylko text używamy
+      - text
+      - image
+      - group_change
+    description: typ przesyłanej wiadomości
+
+  binary_data:
+    type: string
+    format: byte
+    description: dane binarne zakodowane w base64?
+
+  # ========= ważne obiekty =========
+
   html_response:
     type: object
 
-    properties: 
+    properties:
       html:
         $ref: "#/schemas/html"
-      
+
       response_reason:
         $ref: "#/schemas/reason"
-    
+
     required:
       - html

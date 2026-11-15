@@ -1,0 +1,159 @@
+schemas:
+
+  groupchat:
+    type: object
+
+    properties:
+      id:
+        $ref: './core.yaml#/schemas/groupchat_id'
+
+      users:
+        type: array
+        items:
+          $ref: './core.yaml#/schemas/user_id'
+
+      leader:
+        $ref: './core.yaml#/schemas/user_id'
+
+    required:
+      - id
+      - users
+      - leader
+
+  message_key:
+    type: object
+
+    properties:
+      id:
+        $ref: './core.yaml#/schemas/message_key_id'
+
+      users:
+        type: array
+        items:
+          $ref: './core.yaml#/schemas/user_id'
+
+      key:
+        $ref: './core.yaml#/schemas/assymetric_cypher_text'
+
+    required:
+      - id
+      - users
+      - key
+
+  message:
+    type: object
+
+    properties:
+      type:
+        $ref: './core.yaml#/schemas/message_type'
+
+      content:
+        $ref: './core.yaml#/schemas/binary_data'
+
+    required:
+      - type
+      - content
+
+  encrypted_message:
+    type: object
+
+    properties:
+      id:
+        $ref: './core.yaml#/schemas/message_id'
+
+      message:
+        $ref: './core.yaml#/schemas/aes_cypher_text'
+
+      server_metadata:
+        # nie wiem czy to w końcu trzeba?
+        $ref: './core.yaml#/schemas/assymetric_cypher_text'
+
+      key_used:
+        $ref: './core.yaml#/schemas/message_key_id'
+
+    required:
+      - id
+      - message
+      - server_metadata
+      - key_used
+
+  # requesty
+  make_groupchat_request:
+    type: object
+
+    properties:
+      keys:
+        type: object
+        description: "dict kluczy: user_id: message_key[]"
+        additionalProperties:
+          type: array
+          items:
+            $ref: '#/schemas/message_key'
+
+    required:
+      - keys
+
+  send_groupchat_message_request:
+    type: object
+
+    properties:
+      message:
+        $ref: '#/schemas/message'
+
+      key:
+        $ref: './core.yaml#/schemas/message_key_id'
+
+    required:
+      - message
+      - key
+
+  # odpowiedzi
+  get_user_response:
+    type: object
+
+    properties:
+      public_key:
+        $ref: './core.yaml#/schemas/public_key'
+
+    required:
+      - public_key
+
+  get_user_groupchats_response:
+    type: object
+
+    properties:
+      group_chats:
+        type: array
+        items:
+          $ref: '#/schemas/groupchat'
+
+    required:
+      - group_chats
+
+  get_groupchat_response:
+    type: object
+
+    properties:
+      group_chat:
+        $ref: '#/schemas/groupchat'
+
+      message_keys:
+        type: array
+        items:
+          $ref: '#/schemas/message_key'
+
+    required:
+      - group_chat
+      - message_keys
+
+  get_groupchat_messages_response:
+    type: object
+
+    properties:
+      messages:
+        type: array
+        items:
+          $ref: '#/schemas/encrypted_message'
+
+    required:
+      - messages

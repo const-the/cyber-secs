@@ -1,0 +1,219 @@
+paths:
+  /user/{user_id}:
+    get:
+      security: []
+
+      operationId: get_user
+
+      tags:
+        - user
+      summary: "pobierz informacje o użytkowniku"
+      description: "pobierz publicznie dostępne informacje o użytkowniku, którymi jest tylko klucz publiczny"
+
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/user_id'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/get_user_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '404':
+          $ref: "../components/responses.yaml#/responses/not_found_404"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+
+  /user/{user_id}/gcs:
+    get:
+      security: []
+
+      tags:
+        - user
+      operationId: get_user_groupchats
+      summary: "pobierz listę groupchatów użytkownika"
+      description: "pobierz listę groupchatów użytkownika (to samo co w summary bo nie ma o czym się rozwodzić)"
+
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/user_id'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/get_user_groupchats_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/forbidden_403"
+        '404':
+          $ref: "../components/responses.yaml#/responses/not_found_404"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+
+  /gc/new:
+    post:
+      security: []
+
+      tags:
+        - gc
+      operationId: make_groupchat
+      summary: "stwórz nowy groupchat"
+      description: "stwórz nowy groupchat z określonymi użytkownikami"
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/general.yaml#/schemas/make_groupchat_request'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/get_user_groupchats_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/forbidden_403"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+
+  /gc/{groupchat_id}:
+    get:
+      security: []
+
+      tags:
+        - gc
+      operationId: get_groupchat
+      summary: "pobierz informacje o groupchacie"
+      description: "pobierz informacje o groupchacie (to samo co w summary bo nie ma o czym się rozwodzić)"
+
+      parameters:
+        - name: groupchat_id
+          in: path
+          required: true
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/groupchat_id'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/get_groupchat_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/forbidden_403"
+        '404':
+          $ref: "../components/responses.yaml#/responses/not_found_404"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+
+  /gc/{groupchat_id}/message:
+    get:
+      security: []
+
+      tags:
+        - gc
+      operationId: get_groupchat_messages
+      summary: "pobierz wiadomości"
+      description: "pobierz wiadomości z groupchatu od ostatnio widzianego id"
+
+      parameters:
+        - name: groupchat_id
+          in: path
+          required: true
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/groupchat_id'
+        - name: last_seen_id
+          in: query
+          required: false
+          description: "id ostatnio pobranej wiadomości"
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/message_id'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/get_groupchat_messages_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/forbidden_403"
+        '404':
+          $ref: "../components/responses.yaml#/responses/not_found_404"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"
+
+    post:
+      security: []
+
+      tags:
+        - gc
+      operationId: send_groupchat_message
+      summary: "wyślij wiadomość"
+      description: "wyślij wiadomość do groupchatu"
+
+      parameters:
+        - name: groupchat_id
+          in: path
+          required: true
+          schema:
+            $ref: '../components/schemas/core.yaml#/schemas/groupchat_id'
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/general.yaml#/schemas/send_groupchat_message_request'
+
+      responses:
+        "200":
+          $ref: "../components/responses.yaml#/responses/OK_200"
+        '400':
+          $ref: "../components/responses.yaml#/responses/bad_request_400"
+        '403':
+          $ref: "../components/responses.yaml#/responses/forbidden_403"
+        '404':
+          $ref: "../components/responses.yaml#/responses/not_found_404"
+        '408':
+          $ref: "../components/responses.yaml#/responses/request_timeout_408"
+        '429':
+          $ref: "../components/responses.yaml#/responses/too_many_requests_429"
+        '500':
+          $ref: "../components/responses.yaml#/responses/internal_server_error_500"
+        default:
+          $ref: "../components/responses.yaml#/responses/generic_error"

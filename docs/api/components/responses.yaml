@@ -1,59 +1,101 @@
-responses: 
-# ========= odpowiedzi serwera =========
+responses:
+  # ========= odpowiedzi serwera =========
   'OK_200':
     description: klient wysłał poprawne żądanie
-    content: 
+    content:
       application/json:
-        schema: 
+        schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
 
   'send_challange_200':
     description: serwer wysyła odpowiedź na wyzwanie wraz ze swoim wyzwaniem
-    content: 
+    content:
       application/json:
         schema:
           $ref: "./schemas/auth.yaml#/schemas/challenge"
 
   'send_session_token_200':
     description: serwer wysyła klientowi session token
-    content: 
+    content:
       application/json:
         schema:
           $ref: "./schemas/auth.yaml#/schemas/login"
+
+  'get_user_200':
+    description: serwer odsyła klucz publiczny użytkownika
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/general.yaml#/schemas/get_user_response"
+
+  'get_user_groupchats_200':
+    description: serwer odsyła groupchaty użytkownika
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/general.yaml#/schemas/get_user_groupchats_response"
+
+  'get_groupchat_200':
+    description: serwer odsyła informacje o groupchacie
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/general.yaml#/schemas/get_groupchat_response"
+
+  'get_groupchat_messages_200':
+    description: serwer odsyła nowe wiadomości z groupchatu
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/general.yaml#/schemas/get_groupchat_messages_response"
 
   # ^^^ 2XX ^^^
 
   'bad_request_400':
     description: klient wysłał źle sformatowane żądanie
-    content: 
+    content:
       application/json:
-        schema: 
+        schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
-    
+
+  'forbidden_403':
+    description: użytkownik nie jest autoryzowany do wykonania operacji
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/core.yaml#/schemas/html_response"
+
   'wrong_login_info_403':
     description: klient podał albo zły nonce albo niepoprawny uid LUB klient nie wysłał odpowiedzi wystarczająco szybko
-    content: 
+    content:
+      application/json:
+        schema:
+          $ref: "./schemas/core.yaml#/schemas/html_response"
+
+  'not_found_404':
+    description: nie znaleziono szukanych danych
+    content:
       application/json:
         schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
 
   'request_timeout_408':
     description: serwer czekał za długo na wiadomość
-    content: 
+    content:
       application/json:
         schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
-            
+
   'im_a_teapot_418':
     description: serwer jest czajnikiem
-    content: 
+    content:
       application/json:
         schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
 
   'too_many_requests_429':
     description: wysłano za dużo zapytań, najlepiej ograniczyć dostęp do serwera przez klienta
-    content: 
+    content:
       application/json:
         schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
@@ -61,16 +103,16 @@ responses:
 
   'internal_server_error_500':
     description: serwer zachował się niespodziewanie
-    content: 
+    content:
       application/json:
-        schema: 
+        schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"
 
   # ^^^ 5XX ^^^
 
   'generic_error':
     description: wystąpił jakiś błąd ale nie jest zbyt ważne żeby sprecyzować jaki albo nie jest to możliwe
-    content: 
+    content:
       application/json:
-        schema: 
+        schema:
           $ref: "./schemas/core.yaml#/schemas/html_response"

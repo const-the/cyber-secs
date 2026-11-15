@@ -17,10 +17,24 @@ security:
 paths:
   /auth/init:
     $ref: './paths/auth.yaml#/paths/~1auth~1init'
-  
+
   /auth/login:
     $ref: 'paths/auth.yaml#/paths/~1auth~1login'
 
+  /user/{user_id}:
+    $ref: './paths/general.yaml#/paths/~1user~1{user_id}'
+
+  /user/{user_id}/gcs:
+    $ref: './paths/general.yaml#/paths/~1user~1{user_id}~1gcs'
+
+  /gc/new:
+    $ref: './paths/general.yaml#/paths/~1gc~1new'
+
+  /gc/{groupchat_id}:
+    $ref: './paths/general.yaml#/paths/~1gc~1{groupchat_id}'
+
+  /gc/{groupchat_id}/message:
+    $ref: './paths/general.yaml#/paths/~1gc~1{groupchat_id}~1message'
 
 components:
   securitySchemes:

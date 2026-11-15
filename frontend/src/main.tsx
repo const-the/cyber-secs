@@ -8,6 +8,7 @@ import ChatHomePage from './pages/ChatHomePage.tsx'
 import { AuthProvider, useAuth } from './util/AuthContext.tsx'
 import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router/dom";
+import ChatArea from './components/ChatArea.tsx'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { authToken } = useAuth();
@@ -25,7 +26,10 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ChatHomePage />
       </ProtectedRoute>
-    )}
+    ),
+  children: [
+    {path: ":gc_id", element: <ChatArea/>}
+  ]}
 ]);
 
 createRoot(document.getElementById('root')!).render(

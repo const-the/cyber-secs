@@ -1,4 +1,4 @@
-import Logo from "../components/logo"
+import Logo from "../components/Logo"
 import { useAuth } from "../util/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router";
@@ -31,7 +31,7 @@ export default function Register() {
     }
 
     return <div className="login-card">
-        <Logo />
+        <Logo withBorder={true}/>
         <h1>Rejestracja</h1>
         <label htmlFor="addr">Adres serwera</label>
         <input type="text" id="addr" placeholder="np. localhost:2137" value={serverAddress} onChange={(e) => { setServerAddress(e.target.value) }}></input>

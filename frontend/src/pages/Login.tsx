@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import Logo from "../components/logo";
+import Logo from "../components/Logo";
 import Autentykacja from "../../assets/autentykacja.gif";
 import { useAuth } from "../util/AuthContext";
 export default function Login() {
@@ -23,7 +23,7 @@ export default function Login() {
     }
 
     return <div className="login-card">
-        <Logo />
+        <Logo withBorder={true}/>
         <h1>Logowanie do serwisu</h1>
         <label htmlFor="addr">Adres serwera</label>
         <input
